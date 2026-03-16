@@ -63,6 +63,33 @@ while running:
         if event.type == pygame.QUIT:
             running = False
 
+        # game over
+game_over_font = pygame.font.Font(None,64)
+
+def show_score(x,y):
+    score = font.render("Score : " + str(score_value), True, (255,255,255))
+    screen.blit(score,(x,y))
+
+def game_over_text():
+    over_text = game_over_font.render("GAME OVER", True, (255,0,0))
+    screen.blit(over_text, (200,250))
+
+def player(x, y):
+    screen.blit(playerimg, (x, y))
+
+def enemy(x, y, img):
+    screen.blit(img, (x, y))
+
+def fire_bullet(x, y):
+    global bullet_state
+    bullet_state = "fire"
+    screen.blit(bulletimg, (x + 16, y + 10))
+
+def isCollision(enemyX, enemyY, bulletX, bulletY):
+    distance = math.sqrt((enemyX-bulletX)**2 + (enemyY-bulletY)**2)
+    return distance < 27
+
+
         # key pressed(speed control)
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_LEFT:
