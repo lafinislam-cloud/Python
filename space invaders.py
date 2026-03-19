@@ -61,8 +61,8 @@ def show_game_over():
 def player(x, y):
     screen.blit(playerimg, (x, y))
 
-def enemy(x, y, i):
-    screen.blit(enemyimg, (x, y))
+def enemy(x, y):
+    enemy(enemyX[i], enemyY[i])
 
 def fire_bullet(x, y):
     global bullet_state
@@ -76,6 +76,7 @@ def isCollision(enemyX, enemyY, bulletX, bulletY):
 
 # Game loop
 running = True
+game_over = False
 while running:
 
       # clear screen
@@ -108,21 +109,6 @@ while running:
 
     # enforce boundaries
     playerX = max(0, min(playerX, 800 - playerimg.get_width()))
-
-    #enemy movement
-    
-    if enemyX <= 0:
-        enemyX_change = 0.2
-        enemyY += enemyY_change
-    elif enemyX >= 736:
-        enemyX_change = -0.2
-        enemyY += enemyY_change
-
-
-
-    # player move
-    playerX += playerX_change
-    playerX = max(0, min(playerX, 736))
 
     # enemy move
     for i in range(num_of_enemies):
