@@ -48,7 +48,7 @@ for i in range(num_of_enemies):
 bulletimg = pygame.image.load('Bullet png.png')
 bulletX = 0
 bulletY = 480
-bulletY_change = 15
+bulletY_change = 10
 bullet_state = "ready"
 
 # Power-Up (rapid fire)
@@ -137,18 +137,18 @@ while running:
         enemyX[i] += enemyX_change[i]
 
         if enemyX[i] <= 0:
-            enemyX_change[i] = 3.5
+            enemyX_change[i] = 2
             enemyY[i] += enemyY_change[i]
         elif enemyX[i] >= 736:
-            enemyX_change[i] = -2.5
+            enemyX_change[i] = -2
             enemyY[i] += enemyY_change[i]
 
         # Collision
         if isCollision(enemyX[i], enemyY[i], bulletX, bulletY):
             bulletY = 480
             bullet_state = "ready"
-            enemyX[i] = random.randint(0, 736)
-            enemyY[i] = random.randint(50, 150)
+           # enemyX[i] = random.randint(0, 736)
+           # enemyY[i] = random.randint(50, 150)
 
             # Spawn rapid fire power-up (
             if random.randint(0, 4) == 0:
@@ -159,9 +159,6 @@ while running:
             enemyX[i] = random.randint(0, 736)
             enemyY[i] = random.randint(50, 150)
 
-        enemy(enemyX[i], enemyY[i])
-
-        # Draw enemy
         enemy(enemyX[i], enemyY[i])
 
 
