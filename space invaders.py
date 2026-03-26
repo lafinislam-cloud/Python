@@ -42,7 +42,7 @@ for i in range(num_of_enemies):
     enemyX.append(random.randint(0, 736))
     enemyY.append(random.randint(50, 150))
     enemyX_change.append(0.5)
-    enemyY_change.append(40)
+    enemyY_change.append(2)
 
 # Bullet
 bulletimg = pygame.image.load('Bullet png.png')
@@ -58,7 +58,7 @@ powerupY = 0
 powerup_active = False
 powerupY_change = 3
 
-rapid_fire = True
+rapid_fire = False
 rapid_fire_time = 0
 
 
@@ -114,13 +114,31 @@ while running:
                 if rapid_fire or bullet_state == "ready":
                     bulletX = playerX
                     bulletY = playerY
-                    bullet_state = "fire"
+                    fire_bullet(bulletX, bulletY)
 
         # Key released
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
                 playerX_change = 0
 
+        if not game_over:
+
+        for i in range(num_of_enemies):
+
+            if enemyY[i] > 440:
+                game_over = True
+                for j in range(num_of_enemies):
+                    enemyY[j] = 2000
+                break
+
+            enemyX[i] += enemyX_change[i]
+
+            if enemyX[i] <= 0:
+                enemyX_change[i] = 3.5
+                enemyY[i] += enemyY_change[i]
+            elif enemyX[i] >= 736:
+                enemyX_change[i] = -2.5
+                enemyY[i] += enemyY_change[i]
     # Player movement
     playerX += playerX_change
     playerX = max(0, min(playerX, 800 - playerimg.get_width()))
@@ -147,7 +165,6 @@ while running:
         if isCollision(enemyX[i], enemyY[i], bulletX, bulletY):
             bulletY = 480
             bullet_state = "ready"
-            enemyX[i] = random.randint(0, 736)
             enemyY[i] = random.randint(50, 150)
 
             # Spawn rapid fire power-up (
@@ -161,9 +178,6 @@ while running:
 
         enemy(enemyX[i], enemyY[i])
 
-        # Draw enemy
-        enemy(enemyX[i], enemyY[i])
-
 
     # Bullet movement
     if bulletY <= 0:
@@ -173,6 +187,8 @@ while running:
     if bullet_state == "fire":
         fire_bullet(bulletX, bulletY)
         bulletY -= bulletY_change
+        if powerupY > 600:
+                powerup_active = False
 
     # Powerup movement
     if powerup_active:
