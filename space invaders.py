@@ -41,7 +41,7 @@ enemyY_change = []
 for i in range(num_of_enemies):
     enemyX.append(random.randint(0, 736))
     enemyY.append(random.randint(50, 150))
-    enemyX_change.append(0.5)
+    enemyX_change.append(2)
     enemyY_change.append(40)
 
 # Bullet
@@ -59,9 +59,7 @@ powerup_active = False
 powerupY_change = 3
 
 rapid_fire = False
-rapid_fire_time = pygame.time.get_ticks()
-
-
+rapid_fire_time = 0
 # Font
 font = pygame.font.Font(None, 64)
 
@@ -114,7 +112,7 @@ while running:
                 if rapid_fire or bullet_state == "ready":
                     bulletX = playerX
                     bulletY = playerY
-                    bullet_state = "fire"
+                    fire_bullet(bulletX, bulletY)
 
         # Key released
         if event.type == pygame.KEYUP:
@@ -137,35 +135,27 @@ while running:
         enemyX[i] += enemyX_change[i]
 
         if enemyX[i] <= 0:
-            enemyX_change[i] = 3.5
+            enemyX_change[i] = 2
             enemyY[i] += enemyY_change[i]
         elif enemyX[i] >= 736:
-            enemyX_change[i] = -2.5
+            enemyX_change[i] = -2
             enemyY[i] += enemyY_change[i]
 
         # Collision
-        
         if isCollision(enemyX[i], enemyY[i], bulletX + 16, bulletY + 10):
             bulletY = 480
             bullet_state = "ready"
+
+            # Spawn power-up
+            if random.randint(0, 4) == 0:
+                powerupX = enemyX[i]
+                powerupY = enemyY[i]
+                powerup_active = True
+
+            # Reset enemy
             enemyX[i] = random.randint(0, 736)
             enemyY[i] = random.randint(50, 150)
-
-            # Spawn rapid fire power-up (
-          # Spawn rapid fire power-up
-        if random.randint(0, 4) == 0:
-            powerupX = enemyX[i]
-            powerupY = enemyY[i]
-           powerup_active = True
-
-     # THEN reset enemy
-        enemyX[i] = random.randint(0, 736)
-        
-
         enemy(enemyX[i], enemyY[i])
-
-    
-
 
     # Bullet movement
     if bulletY <= 0:
@@ -180,26 +170,27 @@ while running:
     if powerup_active:
         draw_powerup(powerupX, powerupY)
         powerupY += powerupY_change
+   
+    # Collect
+    if powerup_collision(playerX, playerY, powerupX, powerupY):
+        powerup_active = False
+        rapid_fire = True
+        rapid_fire_time = pygame.time.get_ticks()
+
+    # Remove if off screen
     if powerupY > 600:
         powerup_active = False
-
-        # Collect power-up
-        if powerup_collision(playerX, playerY, powerupX, powerupY):
-            powerup_active = False
-            rapid_fire = True
-            rapid_fire_time = pygame.time.get_ticks()
 
     # Rapid fire time
     if rapid_fire:
         if pygame.time.get_ticks() - rapid_fire_time > 5000:
             rapid_fire = False
 
-
- 
-
+    # Draw player
+    player(playerX,playerY)
     # Game over text
     if game_over:
         show_game_over()
 
     pygame.display.update()
-    clock.tick(60)
+    clock.tick(FPS)
