@@ -142,33 +142,22 @@ while running:
             enemyY[i] += enemyY_change[i]
 
        # Collision
-        if isCollision(enemyX[i], enemyY[i], bulletX + 16, bulletY + 10):
-            bulletY = 480
-            bullet_state = "ready"
+       if isCollision(enemyX[i], enemyY[i], bulletX + 16, bulletY + 10):
+        bulletY = 480
+        bullet_state = "ready"
 
-            # Spawn power-up only when enemy hit 
-            if random.randint(0, 4) == 0: 
-                powerupX = enemyX[i]          
-                powerupY = enemyY[i]          
-                powerup_active = True    
+    # Reset enemy
+    enemyX[i] = random.randint(0, 736)
+    enemyY[i] = random.randint(50, 150)
 
-        #  Spawn power-up ONLY when enemy hit
-        if random.randint(0, 4) == 0:
+    # Spawn power-up only when enemy is hit (20% chance)
+    if random.randint(0, 4) == 0:
         powerupX = enemyX[i]
         powerupY = enemyY[i]
         powerup_active = True
 
-            # Spawn power-up
-            if random.randint(0, 4) == 0:
-                powerupX = enemyX[i]
-                powerupY = enemyY[i]
-                powerup_active = True
-
-            # Reset enemy
-            enemyX[i] = random.randint(0, 736)
-            enemyY[i] = random.randint(50, 150)
-        enemy(enemyX[i], enemyY[i])
-
+# Draw enemy
+enemy(enemyX[i], enemyY[i])
     # Bullet movement
     if bulletY <= 0:
         bulletY = 480
