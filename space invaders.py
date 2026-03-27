@@ -150,11 +150,11 @@ while running:
     enemyX[i] = random.randint(0, 736)
     enemyY[i] = random.randint(50, 150)
 
-    # Spawn power-up only when enemy is hit (20% chance)
-    if random.randint(0, 4) == 0:
-        powerupX = enemyX[i]
-        powerupY = enemyY[i]
-        powerup_active = True
+   # Spawn power-up only when enemy is hit (20% chance)
+   if random.randint(0, 4) == 0:
+    powerupX = enemyX[i]
+    powerupY = enemyY[i]
+    powerup_active = True
 
 # Draw enemy
 enemy(enemyX[i], enemyY[i])
