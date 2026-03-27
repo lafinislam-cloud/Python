@@ -32,7 +32,6 @@ playerX_change = 0
 # Enemy
 enemyimg = pygame.image.load('alien type 1.jpg')
 num_of_enemies = 5
-
 enemyX = []
 enemyY = []
 enemyX_change = []
@@ -60,6 +59,7 @@ powerupY_change = 3
 
 rapid_fire = False
 rapid_fire_time = 0
+
 # Font
 font = pygame.font.Font(None, 64)
 
@@ -97,6 +97,7 @@ while running:
 
     screen.blit(background, (0, 0))
 
+    # Event handling
     for event in pygame.event.get():
 
         if event.type == pygame.QUIT:
@@ -123,17 +124,18 @@ while running:
     playerX += playerX_change
     playerX = max(0, min(playerX, 800 - playerimg.get_width()))
 
-    # Enemy movement
+    # Enemy movement and collision
     for i in range(num_of_enemies):
 
+        # Check game over
         if enemyY[i] > 440:
             game_over = True
             for j in range(num_of_enemies):
                 enemyY[j] = 2000
             break
 
+        # Move enemy
         enemyX[i] += enemyX_change[i]
-
         if enemyX[i] <= 0:
             enemyX_change[i] = 2
             enemyY[i] += enemyY_change[i]
@@ -141,23 +143,24 @@ while running:
             enemyX_change[i] = -2
             enemyY[i] += enemyY_change[i]
 
-       # Collision
-       if isCollision(enemyX[i], enemyY[i], bulletX + 16, bulletY + 10):
-        bulletY = 480
-        bullet_state = "ready"
+        # Collision with bullet
+        if isCollision(enemyX[i], enemyY[i], bulletX + 16, bulletY + 10):
+            bulletY = 480
+            bullet_state = "ready"
 
-    # Reset enemy
-    enemyX[i] = random.randint(0, 736)
-    enemyY[i] = random.randint(50, 150)
+            # Reset enemy
+            enemyX[i] = random.randint(0, 736)
+            enemyY[i] = random.randint(50, 150)
 
-   # Spawn power-up only when enemy is hit (20% chance)
-   if random.randint(0, 4) == 0:
-    powerupX = enemyX[i]
-    powerupY = enemyY[i]
-    powerup_active = True
+            # Spawn power-up only when enemy is hit (20% chance)
+            if random.randint(0, 4) == 0:
+                powerupX = enemyX[i]
+                powerupY = enemyY[i]
+                powerup_active = True
 
-# Draw enemy
-enemy(enemyX[i], enemyY[i])
+        # Draw enemy
+        enemy(enemyX[i], enemyY[i])
+
     # Bullet movement
     if bulletY <= 0:
         bulletY = 480
@@ -167,31 +170,33 @@ enemy(enemyX[i], enemyY[i])
         fire_bullet(bulletX, bulletY)
         bulletY -= bulletY_change
 
-     # Powerup movement and collection
-    if powerup_active:   
-        draw_powerup(powerupX, powerupY)     
-        powerupY += powerupY_change           
+    # Powerup movement and collection
+    if powerup_active:
+        draw_powerup(powerupX, powerupY)
+        powerupY += powerupY_change
 
         # Collect power-up
-        if powerup_collision(playerX, playerY, powerupX, powerupY): 
-            powerup_active = False          
-            rapid_fire = True                 
-            rapid_fire_time = pygame.time.get_ticks() 
+        if powerup_collision(playerX, playerY, powerupX, powerupY):
+            powerup_active = False
+            rapid_fire = True
+            rapid_fire_time = pygame.time.get_ticks()
 
     # Remove power-up if off screen
     if powerupY > 600:
         powerup_active = False
 
-    # Rapid fire time
+    # Rapid fire timer
     if rapid_fire:
         if pygame.time.get_ticks() - rapid_fire_time > 5000:
             rapid_fire = False
 
     # Draw player
-    player(playerX,playerY)
+    player(playerX, playerY)
+
     # Game over text
     if game_over:
         show_game_over()
 
+    # Update display
     pygame.display.update()
     clock.tick(FPS)
