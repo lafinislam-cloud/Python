@@ -58,8 +58,8 @@ powerupY = 0
 powerup_active = False
 powerupY_change = 3
 
-rapid_fire = True
-rapid_fire_time = 0
+rapid_fire = False
+rapid_fire_time = pygame.time.get_ticks()
 
 
 # Font
@@ -144,20 +144,23 @@ while running:
             enemyY[i] += enemyY_change[i]
 
         # Collision
-        if isCollision(enemyX[i], enemyY[i], bulletX, bulletY):
+        
+        if isCollision(enemyX[i], enemyY[i], bulletX + 16, bulletY + 10):
             bulletY = 480
             bullet_state = "ready"
             enemyX[i] = random.randint(0, 736)
             enemyY[i] = random.randint(50, 150)
 
             # Spawn rapid fire power-up (
-            if random.randint(0, 4) == 0:
-                powerupX = enemyX[i]
-                powerupY = enemyY[i]
-                powerup_active = True
+          # Spawn rapid fire power-up
+        if random.randint(0, 4) == 0:
+            powerupX = enemyX[i]
+            powerupY = enemyY[i]
+           powerup_active = True
 
-            enemyX[i] = random.randint(0, 736)
-            enemyY[i] = random.randint(50, 150)
+     # THEN reset enemy
+        enemyX[i] = random.randint(0, 736)
+        
 
         enemy(enemyX[i], enemyY[i])
 
@@ -177,6 +180,8 @@ while running:
     if powerup_active:
         draw_powerup(powerupX, powerupY)
         powerupY += powerupY_change
+    if powerupY > 600:
+        powerup_active = False
 
         # Collect power-up
         if powerup_collision(playerX, playerY, powerupX, powerupY):
