@@ -141,10 +141,22 @@ while running:
             enemyX_change[i] = -2
             enemyY[i] += enemyY_change[i]
 
-        # Collision
+       # Collision
         if isCollision(enemyX[i], enemyY[i], bulletX + 16, bulletY + 10):
             bulletY = 480
             bullet_state = "ready"
+
+            # Spawn power-up only when enemy hit 
+            if random.randint(0, 4) == 0: 
+                powerupX = enemyX[i]          
+                powerupY = enemyY[i]          
+                powerup_active = True    
+
+        #  Spawn power-up ONLY when enemy hit
+        if random.randint(0, 4) == 0:
+        powerupX = enemyX[i]
+        powerupY = enemyY[i]
+        powerup_active = True
 
             # Spawn power-up
             if random.randint(0, 4) == 0:
@@ -166,18 +178,18 @@ while running:
         fire_bullet(bulletX, bulletY)
         bulletY -= bulletY_change
 
-    # Powerup movement
-    if powerup_active:
-        draw_powerup(powerupX, powerupY)
-        powerupY += powerupY_change
-   
-    # Collect
-    if powerup_collision(playerX, playerY, powerupX, powerupY):
-        powerup_active = False
-        rapid_fire = True
-        rapid_fire_time = pygame.time.get_ticks()
+     # Powerup movement and collection
+    if powerup_active:   
+        draw_powerup(powerupX, powerupY)     
+        powerupY += powerupY_change           
 
-    # Remove if off screen
+        # Collect power-up
+        if powerup_collision(playerX, playerY, powerupX, powerupY): 
+            powerup_active = False          
+            rapid_fire = True                 
+            rapid_fire_time = pygame.time.get_ticks() 
+
+    # Remove power-up if off screen
     if powerupY > 600:
         powerup_active = False
 
